@@ -13,8 +13,9 @@ LaTeX 项目翻译成可编译、可校对、可维护的中文 LaTeX，并支�
 - 以出版 PDF 为内容核对依据，以源 TeX 辅助恢复结构和标记
 - 保留定理、证明、公式、标签、引用、脚注、图表和层级结构
 - 建立项目术语表，检查术语与符号一致性
+- 支持 MathTranslations 官方模板的 `\newterm`、术语索引、长证明及习题答案互跳
 - 分离中文、数学、编译与版面三类校对
-- 用内置脚本检查重复标签、未定义引用、缺失资源、待办标记和编译日志
+- 用内置脚本检查重复标签、未定义引用、缺失资源、模板漂移和编译日志
 
 ## 安装
 
@@ -41,10 +42,12 @@ LaTeX 项目翻译成可编译、可校对、可维护的中文 LaTeX，并支�
 ```bash
 python scripts/audit_latex.py path/to/project
 python scripts/audit_latex.py path/to/project --strict
+python scripts/audit_latex.py path/to/project --profile mathtranslations --strict
 ```
 
 默认情况下，确定性错误返回非零状态；`--strict` 也会让警告返回非零状态，
-适合 CI。
+适合 CI。`--profile mathtranslations` 还会检查 XeLaTeX、模板元信息、字体与
+链接配置、术语键、长证明配对、句末标点和最终术语索引。
 
 ## 目录
 
@@ -54,6 +57,7 @@ mathtranslations/
 ├── agents/openai.yaml
 ├── references/
 │   ├── latex-quality.md
+│   ├── mathtranslations-template.md
 │   ├── review-checklist.md
 │   └── workflow.md
 ├── scripts/audit_latex.py
@@ -65,6 +69,11 @@ mathtranslations/
 工作流主要依据 MathTranslations 公开指南整理，并使用自己的表述和实现。
 在线指南、术语资源与模板可能更新，实际项目应以
 [指南页面](https://mathtranslations.org/guide/) 当前版本为准。
+
+模板配置参考还核对了
+`MathTranslations-Template.c9598d4a8d56.zip` 的实际 TeX 与示例 PDF。
+由于该压缩包未声明许可证，本仓库记录其接口和排版契约，但不重新分发模板、
+示例 PDF 或标志文件。
 
 数学翻译仍需要领域知识和人工判断。编译成功或脚本检查通过，不代表数学内容
 已经正确。

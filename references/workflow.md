@@ -21,7 +21,7 @@ visual comparison.
 
 ## 2. Choose Evidence Priority
 
-Use this default order when evidence conflicts:
+Use this default order for content when evidence conflicts:
 
 1. published source PDF for the visible mathematical work;
 2. source TeX for exact markup, labels, citation keys, and macro intent;
@@ -30,6 +30,11 @@ Use this default order when evidence conflicts:
 
 Do not merge editions silently. Record the edition, revision, or date used when
 it is known.
+
+Presentation has a separate authority. If the user selects the
+MathTranslations template, its TeX governs layout, fonts, semantic environments,
+links, and terminology-index mechanics. Source content still governs what the
+translation says and how displayed objects are numbered.
 
 ## 3. Bootstrap Or Preserve The Project
 
@@ -40,7 +45,11 @@ For a new project:
 
 - review the current resources linked from
   <https://mathtranslations.org/guide/>;
-- choose a Unicode-capable Chinese TeX setup appropriate to the environment;
+- when using the MathTranslations template, read
+  [mathtranslations-template.md](mathtranslations-template.md), preserve an
+  untouched copy, and compile the unchanged template as a baseline;
+- otherwise choose a Unicode-capable Chinese TeX setup appropriate to the
+  environment;
 - keep source assets and generated build artifacts separate;
 - establish a repeatable build command;
 - create a minimal sample containing Chinese prose, formulas, theorem
@@ -48,6 +57,10 @@ For a new project:
 
 Do not vendor a remote template or terminology export without checking its
 license and version. A current link is often safer than an unmaintained copy.
+
+The recommended extraction path is source PDF to MinerU or another parser,
+then Markdown as a working draft, followed by translation and LaTeX reassembly.
+Extraction output never outranks the source PDF.
 
 ## 4. Establish Terminology
 
@@ -72,6 +85,10 @@ For a new or disputed term:
 Keep symbols, transliterations, capitalization, and named constructions
 consistent. Do not translate a term mechanically when its meaning changes by
 context.
+
+With the MathTranslations template, encode the first formal occurrence with
+`\newterm{stable-key}{中文术语}{English term}` and write the Chinese term normally
+afterward. Reserve `\termcn` for emphasis that should not create an index row.
 
 ## 5. Translate In Reviewable Units
 
@@ -119,6 +136,10 @@ verified.
 Translate title pages, prefaces, appendices, indices, acknowledgements, and
 license notices according to project scope. Keep legal and attribution text
 faithful.
+
+For the MathTranslations cover, replace all sample metadata: Chinese and
+English titles, author, edition, publisher, year, translator, model, and update
+date. Keep the terminology index after the bibliography and all other content.
 
 ## 7. Track Uncertainty
 

@@ -54,6 +54,41 @@ LOG_PATTERNS = (
     ("warning", re.compile(r"Rerun to get cross-references right", re.IGNORECASE)),
     ("warning", re.compile(r"Overfull \\\\hbox", re.IGNORECASE)),
 )
+NEWTERM_RE = re.compile(
+    r"\\newterm\s*\{([^{}]+)\}\s*\{([^{}]+)\}\s*\{([^{}]+)\}"
+)
+LONGPROOF_LINK_RE = re.compile(r"\\longprooflink\s*\{([^{}]+)\}\s*\{")
+LONGPROOF_ENV_RE = re.compile(r"\\begin\s*\{longproof\}\s*\{([^{}]+)\}\s*\{")
+COMMAND_DEFINITION_RE = re.compile(
+    r"\\(?:newcommand|renewcommand|providecommand)\s*\{\\([A-Za-z@]+)\}"
+)
+METADATA_DEFAULTS = {
+    "BookTitleCN": "代数学",
+    "BookTitleEN": "Algebra",
+    "OriginalAuthor": "Serge Lang",
+    "OriginalEdition": "3rd edition",
+    "OriginalPublisher": "Springer",
+    "OriginalYear": "2002",
+    "Translator": "数译",
+    "ModelUsed": "GPT-5.6 Sol",
+    "TranslationDate": "17 Aug 2026",
+}
+TEMPLATE_MARKERS = {
+    "term introduction command": r"\newcommand{\newterm}",
+    "terminology index command": r"\newcommand{\printterminology}",
+    "long-proof source link": r"\newcommand{\longprooflink}",
+    "long-proof environment": r"\newenvironment{longproof}",
+    "exercise environment": r"\newenvironment{exercises}",
+    "answer environment": r"\newenvironment{answers}",
+    "Song CJK font": "FandolSong",
+    "Kai terminology font": "FandolKai",
+    "Fang theorem font": "FandolFang",
+    "CMU Serif font": "cmunrm.otf",
+    "internal-link color": "linkcolor=MidnightBlue",
+    "citation color": "citecolor=BrickRed",
+    "URL color": "urlcolor=MidnightBlue",
+    "clickable TOC entries": "linktoc=all",
+}
 
 
 def parse_args() -> argparse.Namespace:
@@ -65,6 +100,11 @@ def parse_args() -> argparse.Namespace:
         "--strict",
         action="store_true",
         help="Return a nonzero exit status when warnings are found",
+    )
+    parser.add_argument(
+        "--profile",
+        choices=("mathtranslations",),
+        help="Apply checks for a named translation template profile",
     )
     return parser.parse_args()
 
@@ -88,6 +128,10 @@ def read_text(path: Path) -> str:
         return path.read_text(encoding="utf-8")
     except UnicodeDecodeError:
         return path.read_text(encoding="utf-8-sig", errors="replace")
+
+
+def strip_comments(text: str) -> str:
+    return re.sub(r"(?<!\\)%.*$", "", text, flags=re.MULTILINE)
 
 
 def line_number(text: str, offset: int) -> int:
@@ -123,7 +167,140 @@ def resolve_bib(project_root: Path, tex_file: Path, target: str) -> list[Path]:
     return result
 
 
-def audit(root: Path) -> tuple[list[str], list[str]]:
+def command_calls(text: str, command: str) -> list[re.Match[str]]:
+    definition_occurrences = {
+        match.start(1) - 1
+        for match in COMMAND_DEFINITION_RE.finditer(text)
+        if match.group(1) == command
+    }
+    return [
+        match
+        for match in re.finditer(rf"\\{re.escape(command)}\b", text)
+        if match.start() not in definition_occurrences
+    ]
+
+
+def audit_mathtranslations_profile(
+    project_root: Path, source_files: list[Path]
+) -> tuple[list[str], list[str]]:
+    errors: list[str] = []
+    warnings: list[str] = []
+    raw_parts: list[str] = []
+    active_parts: list[str] = []
+
+    for source_file in source_files:
+        text = read_text(source_file)
+        raw_parts.append(text)
+        active = strip_comments(text)
+        active_parts.append(active)
+        display = source_file.relative_to(project_root)
+        for number, line in enumerate(active.splitlines(), start=1):
+            if "。" in line:
+                warnings.append(
+                    f"{display}:{number}: MathTranslations prose uses ASCII '.' "
+                    "for sentence endings; found '。'"
+                )
+
+    raw_text = "\n".join(raw_parts)
+    active_text = "\n".join(active_parts)
+
+    if not re.search(
+        r"(?im)^%\s*!\s*TeX\s+program\s*=\s*xelatex\s*$", raw_text
+    ):
+        warnings.append("MathTranslations profile: missing XeLaTeX editor directive")
+
+    document_class = re.search(
+        r"\\documentclass\s*\[([^\]]*)\]\s*\{ctexart\}", active_text
+    )
+    if not document_class:
+        warnings.append(
+            "MathTranslations profile: expected a ctexart document class declaration"
+        )
+    else:
+        options = {item.strip() for item in document_class.group(1).split(",")}
+        for option in ("UTF8", "12pt", "fontset=none"):
+            if option not in options:
+                warnings.append(
+                    f"MathTranslations profile: ctexart option {option!r} is missing"
+                )
+
+    for description, marker in TEMPLATE_MARKERS.items():
+        if marker not in active_text:
+            warnings.append(
+                f"MathTranslations profile: missing {description} marker {marker!r}"
+            )
+
+    for command, sample_value in METADATA_DEFAULTS.items():
+        match = re.search(
+            rf"\\(?:newcommand|renewcommand)\s*\{{\\{command}\}}\s*"
+            r"\{([^{}]*)\}",
+            active_text,
+        )
+        if not match:
+            warnings.append(
+                f"MathTranslations profile: missing cover metadata \\{command}"
+            )
+        elif not match.group(1).strip():
+            warnings.append(
+                f"MathTranslations profile: empty cover metadata \\{command}"
+            )
+        elif match.group(1).strip() == sample_value:
+            warnings.append(
+                f"MathTranslations profile: sample metadata \\{command} still "
+                f"contains {sample_value!r}"
+            )
+
+    term_locations: dict[str, list[str]] = {}
+    for source_file in source_files:
+        text = strip_comments(read_text(source_file))
+        display = source_file.relative_to(project_root)
+        for match in NEWTERM_RE.finditer(text):
+            key = match.group(1).strip()
+            location = f"{display}:{line_number(text, match.start())}"
+            term_locations.setdefault(key, []).append(location)
+            if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9:._-]*", key):
+                warnings.append(
+                    f"{location}: terminology key {key!r} should be stable and "
+                    "label-safe"
+                )
+
+    for key, locations in sorted(term_locations.items()):
+        if len(locations) > 1:
+            errors.append(
+                f"duplicate MathTranslations terminology key {key!r}: "
+                f"{', '.join(locations)}"
+            )
+
+    link_keys = Counter(LONGPROOF_LINK_RE.findall(active_text))
+    proof_keys = Counter(LONGPROOF_ENV_RE.findall(active_text))
+    for key in sorted(set(link_keys) | set(proof_keys)):
+        if link_keys[key] != 1 or proof_keys[key] != 1:
+            errors.append(
+                f"MathTranslations long-proof key {key!r} has "
+                f"{link_keys[key]} link(s) and {proof_keys[key]} proof environment(s)"
+            )
+
+    terminology_calls = command_calls(active_text, "printterminology")
+    if len(terminology_calls) != 1:
+        warnings.append(
+            "MathTranslations profile: expected exactly one final "
+            f"\\printterminology call, found {len(terminology_calls)}"
+        )
+    else:
+        trailing = active_text[terminology_calls[0].end() :]
+        trailing = trailing.replace(r"\end{document}", "").strip()
+        if trailing:
+            warnings.append(
+                "MathTranslations profile: \\printterminology is not the final "
+                "document content"
+            )
+
+    return errors, warnings
+
+
+def audit(
+    root: Path, profile: str | None = None
+) -> tuple[list[str], list[str]]:
     errors: list[str] = []
     warnings: list[str] = []
 
@@ -143,12 +320,15 @@ def audit(root: Path) -> tuple[list[str], list[str]]:
 
     for tex_file in tex_files:
         text = read_text(tex_file)
+        active_text = strip_comments(text)
         display = tex_file.relative_to(project_root)
 
         for name, pattern in COMMAND_PATTERNS.items():
-            for match in pattern.finditer(text):
+            for match in pattern.finditer(active_text):
                 value = match.group(1).strip()
-                location = f"{display}:{line_number(text, match.start())}"
+                if "#" in value:
+                    continue
+                location = f"{display}:{line_number(active_text, match.start())}"
                 if name == "label":
                     label_locations.setdefault(value, []).append(location)
                 elif name == "reference":
@@ -173,15 +353,15 @@ def audit(root: Path) -> tuple[list[str], list[str]]:
                 f"{match.group(0)!r}"
             )
 
-        for match in HARDCODED_REFERENCE_RE.finditer(text):
-            line_start = text.rfind("\n", 0, match.start()) + 1
-            line_end = text.find("\n", match.end())
+        for match in HARDCODED_REFERENCE_RE.finditer(active_text):
+            line_start = active_text.rfind("\n", 0, match.start()) + 1
+            line_end = active_text.find("\n", match.end())
             if line_end == -1:
-                line_end = len(text)
-            line = text[line_start:line_end]
+                line_end = len(active_text)
+            line = active_text[line_start:line_end]
             if "\\ref{" not in line and "\\eqref{" not in line:
                 warnings.append(
-                    f"{display}:{line_number(text, match.start())}: possible "
+                    f"{display}:{line_number(active_text, match.start())}: possible "
                     f"hard-coded reference {match.group(0)!r}"
                 )
 
@@ -215,12 +395,26 @@ def audit(root: Path) -> tuple[list[str], list[str]]:
                         message = f"{display}:{number}: {normalized}"
                         (errors if severity == "error" else warnings).append(message)
 
+    if profile == "mathtranslations":
+        profile_files = sorted(
+            set(
+                tex_files
+                + collect_files(project_root, ".sty")
+                + collect_files(project_root, ".cls")
+            )
+        )
+        profile_errors, profile_warnings = audit_mathtranslations_profile(
+            project_root, profile_files
+        )
+        errors.extend(profile_errors)
+        warnings.extend(profile_warnings)
+
     return errors, warnings
 
 
 def main() -> int:
     args = parse_args()
-    errors, warnings = audit(args.path.resolve())
+    errors, warnings = audit(args.path.resolve(), profile=args.profile)
 
     for message in errors:
         print(f"ERROR: {message}")

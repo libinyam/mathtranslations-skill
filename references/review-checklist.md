@@ -12,6 +12,8 @@ fluent Chinese while missing a mathematical or structural defect.
 - [ ] Logical connectors retain their force.
 - [ ] Proper names, transliterations, acronyms, and capitalization are stable.
 - [ ] Punctuation and spacing are consistent.
+- [ ] If the MathTranslations template is selected, Chinese prose sentences
+  end in ASCII `.` and first-introduction terms use unique `\newterm` keys.
 - [ ] Translator additions are visibly distinguished from source content.
 
 ## Pass 2: Mathematics And Structure
@@ -41,6 +43,12 @@ fluent Chinese while missing a mathematical or structural defect.
 - [ ] Overfull boxes, bad breaks, widows, and orphans have been reviewed where
   they materially affect reading.
 - [ ] Links and bookmarks point to the correct destinations.
+- [ ] MathTranslations long-proof links and environments are paired.
+- [ ] MathTranslations exercises and answer prefixes preserve source order and
+  navigate to the intended counterparts.
+- [ ] Cover metadata no longer contains sample title, author, translator,
+  model, edition, or date values.
+- [ ] `\printterminology` appears exactly once as the final document content.
 
 ## Completion Note
 

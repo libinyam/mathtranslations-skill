@@ -1,6 +1,6 @@
 ---
 name: mathtranslations
-description: Translate mathematical books, papers, notes, and existing LaTeX projects into rigorous Chinese LaTeX, or review and repair an existing mathematical translation. Use when source fidelity, mathematical correctness, terminology consistency, cross-references, citations, compilation, and PDF-level proofreading all matter. Do not use for ordinary non-mathematical translation.
+description: Translate mathematical books, papers, notes, and existing LaTeX projects into rigorous Chinese LaTeX, or review and repair an existing mathematical translation, including projects using the MathTranslations template. Use when source fidelity, mathematical correctness, terminology consistency, cross-references, citations, compilation, and PDF-level proofreading all matter. Do not use for ordinary non-mathematical translation.
 ---
 
 # MathTranslations
@@ -21,14 +21,22 @@ the source, and maintained as a real LaTeX project.
 4. Never silently repair a suspected error in the source. Preserve it by
    default and clearly record the issue; apply a correction only when the user
    requests it or reliable evidence resolves it.
+5. Separate content authority from presentation authority. The source PDF
+   governs mathematical content; when the user chooses the MathTranslations
+   template, `MathTranslations-Template.tex` governs typesetting conventions.
 
 ## Prepare The Project
 
 - Preserve an existing project's document class, packages, file layout, labels,
-  citation keys, macros, and build system unless a change is necessary.
+  citation keys, macros, and build system unless a change is necessary or the
+  user explicitly chooses the MathTranslations template.
 - For a new project, consult the current MathTranslations guide before choosing
   a template or terminology source. Prefer the latest stable resources linked
   from <https://mathtranslations.org/guide/> over bundled stale copies.
+- When a `MathTranslations-Template.zip` or `MathTranslations-Template.tex` is
+  supplied, inspect that exact version instead of relying on memory. Read
+  [references/mathtranslations-template.md](references/mathtranslations-template.md)
+  before adapting it.
 - Build a small project glossary before translating substantial text. Reuse
   established Chinese mathematical terms; keep named objects and symbols
   stable across chapters.
@@ -45,6 +53,12 @@ the source, and maintained as a real LaTeX project.
   sound. Do not convert formulas into prose, screenshots, or Unicode lookalikes.
 - Preserve theorem-like environments, equation structure, bibliography links,
   footnotes, figures, tables, and section hierarchy.
+- With the MathTranslations template, introduce a concept once with
+  `\newterm{stable-key}{中文术语}{English term}`, write the Chinese term normally
+  afterward, and keep `\printterminology` as the final document content.
+- Follow the selected template's punctuation policy. The inspected
+  MathTranslations template uses Chinese punctuation except for an ASCII `.`
+  at the end of Chinese prose sentences.
 - Use `\label` plus the project's reference command for numbered objects. Do
   not hard-code theorem, equation, section, figure, table, or page numbers in
   translated prose.
@@ -62,7 +76,8 @@ Verification is part of the translation, not an optional final polish.
 3. Perform three separate passes: Chinese language and terminology;
    mathematics and structural fidelity; compilation and visual layout.
 4. Run `scripts/audit_latex.py <project-or-tex-file>` for deterministic checks.
-   Use `--strict` when warnings should fail CI.
+   Add `--profile mathtranslations` for projects based on the inspected
+   MathTranslations template, and use `--strict` when warnings should fail CI.
 5. Read [references/review-checklist.md](references/review-checklist.md) before
    declaring a chapter or project complete.
 

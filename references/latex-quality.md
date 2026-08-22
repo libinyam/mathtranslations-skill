@@ -28,6 +28,11 @@ evidence. Preservation and correction are separate editorial choices.
 - Keep generated files out of source directories when the project already has
   a build directory convention.
 
+When the user explicitly selects the MathTranslations template, treat its
+supplied TeX as the project-native style. Do not replace its terminology,
+theorem, long-proof, exercise-answer, section, or hyperlink systems with a
+generic alternative merely for convenience.
+
 ## References And Numbering
 
 Every numbered object that is mentioned elsewhere should have a stable label.
@@ -69,6 +74,15 @@ across included files.
 - Follow the project's existing convention for theorem names, quotation marks,
   emphasis, and parenthetical English.
 
+The inspected MathTranslations profile has an unusual but explicit rule:
+Chinese punctuation is used inside prose, while sentence-final punctuation is
+an ASCII period `.` rather than `。`. Apply this only when that template is the
+selected presentation authority.
+
+The same profile uses Song for prose and examples, Kai for first-introduction
+terms, Fang for most theorem-like bodies, and CMU Serif for English. Preserve
+those roles unless the supplied template version says otherwise.
+
 ## OCR And Transcription
 
 Treat OCR as a draft, not evidence. Check common confusions including:
@@ -98,6 +112,10 @@ relationships, not just visual style.
 Use the project's build command. A successful single engine invocation may not
 resolve bibliography, index, glossary, or cross-reference data, so run the full
 build sequence.
+
+For the inspected MathTranslations template, the baseline is XeLaTeX run at
+least twice. The first run records labels and terminology entries; later runs
+resolve page numbers, links, and the terminology table.
 
 Inspect logs for:
 

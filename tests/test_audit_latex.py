@@ -53,6 +53,87 @@ class AuditLatexTests(unittest.TestCase):
             self.assertTrue(any("hard-coded reference" in item for item in warnings))
             self.assertTrue(any("unresolved marker" in item for item in warnings))
 
+    def test_ignores_macro_parameter_references(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "main.tex").write_text(
+                "\\newcommand{\\row}[1]{\\pageref*{#1}}\n",
+                encoding="utf-8",
+            )
+
+            errors, warnings = AUDIT.audit(root)
+
+            self.assertEqual([], errors)
+            self.assertEqual([], warnings)
+
+    def test_mathtranslations_profile_accepts_core_contract(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            metadata = {
+                "BookTitleCN": "拓扑学",
+                "BookTitleEN": "Topology",
+                "OriginalAuthor": "Example Author",
+                "OriginalEdition": "2nd edition",
+                "OriginalPublisher": "Example Press",
+                "OriginalYear": "2025",
+                "Translator": "Example Translator",
+                "ModelUsed": "Example Model",
+                "TranslationDate": "22 Aug 2026",
+            }
+            metadata_tex = "\n".join(
+                f"\\newcommand{{\\{key}}}{{{value}}}"
+                for key, value in metadata.items()
+            )
+            (root / "main.tex").write_text(
+                "% !TeX program = xelatex\n"
+                "\\documentclass[UTF8,12pt,fontset=none]{ctexart}\n"
+                "\\newcommand{\\newterm}[3]{#2（#3）}\n"
+                "\\newcommand{\\printterminology}{}\n"
+                "\\newcommand{\\longprooflink}[2]{#2}\n"
+                "\\newenvironment{longproof}[2]{}{}\n"
+                "\\newenvironment{exercises}{}{}\n"
+                "\\newenvironment{answers}[1]{}{}\n"
+                "\\def\\fonts{FandolSong FandolKai FandolFang cmunrm.otf}\n"
+                "\\def\\links{linkcolor=MidnightBlue,citecolor=BrickRed,"
+                "urlcolor=MidnightBlue,linktoc=all}\n"
+                f"{metadata_tex}\n"
+                "\\begin{document}\n"
+                "\\newterm{topology}{拓扑}{topology}.\n"
+                "\\longprooflink{main-proof}{查看证明}\n"
+                "\\begin{longproof}{main-proof}{主定理}证明.\\end{longproof}\n"
+                "\\printterminology\n"
+                "\\end{document}\n",
+                encoding="utf-8",
+            )
+
+            errors, warnings = AUDIT.audit(root, profile="mathtranslations")
+
+            self.assertEqual([], errors)
+            self.assertEqual([], warnings)
+
+    def test_mathtranslations_profile_reports_drift(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "main.tex").write_text(
+                "\\documentclass{article}\n"
+                "\\newcommand{\\newterm}[3]{#2}\n"
+                "\\newcommand{\\printterminology}{}\n"
+                "\\begin{document}\n"
+                "\\newterm{bad key}{术语}{term}。\n"
+                "\\newterm{bad key}{术语}{term}。\n"
+                "\\longprooflink{missing-proof}{查看证明}\n"
+                "\\end{document}\n",
+                encoding="utf-8",
+            )
+
+            errors, warnings = AUDIT.audit(root, profile="mathtranslations")
+
+            self.assertTrue(any("terminology key" in item for item in errors))
+            self.assertTrue(any("long-proof key" in item for item in errors))
+            self.assertTrue(any("ASCII '.'" in item for item in warnings))
+            self.assertTrue(any("XeLaTeX" in item for item in warnings))
+            self.assertTrue(any("printterminology" in item for item in warnings))
+
 
 if __name__ == "__main__":
     unittest.main()
