@@ -48,6 +48,8 @@ For a new project:
 - when using the MathTranslations template, read
   [mathtranslations-template.md](mathtranslations-template.md), preserve an
   untouched copy, and compile the unchanged template as a baseline;
+- if the user did not supply template files, copy the skill's bundled
+  `assets/MathTranslations-Template.tex` and `assets/logo.pdf` into the project;
 - otherwise choose a Unicode-capable Chinese TeX setup appropriate to the
   environment;
 - keep source assets and generated build artifacts separate;
@@ -55,8 +57,9 @@ For a new project:
 - create a minimal sample containing Chinese prose, formulas, theorem
   environments, references, citations, and one figure before scaling up.
 
-Do not vendor a remote template or terminology export without checking its
-license and version. A current link is often safer than an unmaintained copy.
+Do not vendor a remote terminology export without checking its license and
+version. The bundled MathTranslations template and logo are MIT-licensed;
+prefer a user-supplied newer template when available.
 
 The recommended extraction path is source PDF to MinerU or another parser,
 then Markdown as a working draft, followed by translation and LaTeX reassembly.

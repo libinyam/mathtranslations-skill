@@ -37,6 +37,11 @@ the source, and maintained as a real LaTeX project.
   supplied, inspect that exact version instead of relying on memory. Read
   [references/mathtranslations-template.md](references/mathtranslations-template.md)
   before adapting it.
+- If the user selects the MathTranslations template but supplies no template
+  files, copy `assets/MathTranslations-Template.tex` and `assets/logo.pdf` into
+  the project. Keep the bundled masters unchanged; edit the project copies.
+- If the user supplies a newer template, prefer that version after comparing
+  its contract with the bundled baseline and recording any meaningful changes.
 - Build a small project glossary before translating substantial text. Reuse
   established Chinese mathematical terms; keep named objects and symbols
   stable across chapters.

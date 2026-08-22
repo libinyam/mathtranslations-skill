@@ -14,9 +14,18 @@ The profile below was derived from the locally supplied archive:
 - contents: `MathTranslations-Template.tex`,
   `MathTranslations-Template.pdf`, and `logo.pdf`.
 
-The archive does not declare a license. Do not redistribute its TeX, PDF, or
-logo in a public deliverable unless the user supplies permission or a license.
-Use the current archive when available because the online template may change.
+The MathTranslations founder and copyright holder authorized the template TeX
+and logo for publication in this skill under the MIT License. Bundled copies
+are available at:
+
+- `assets/MathTranslations-Template.tex`, SHA-256
+  `76F7B60A428192292779766E883376D0D4D15D50E3A3A24C367BE8AE7F35A5FD`;
+- `assets/logo.pdf`, SHA-256
+  `8B3839ADBF870A8C5E825C9F004125816835BBB321617E619E5F589B672FC8D5`.
+
+The compiled template example PDF is not needed at runtime and is not bundled.
+Use a user-supplied or current official template when it is newer, because the
+online template may change.
 
 The TeX comments mention `logo-mark.pdf`, `logo.svg`, and `logo-mark.svg`, but
 those files are not in this archive and the active sample only loads
@@ -164,14 +173,17 @@ behavior and the selected template's presentation.
 ## Adoption Procedure
 
 1. Keep an untouched copy of the supplied archive or TeX for comparison.
-2. Copy the TeX and its actively referenced assets into the translation
-   project when licensing permits.
-3. Compile the unchanged template to establish a baseline.
-4. Replace all cover metadata.
-5. Remove the sample body, not the required preamble, macros, or environments.
-6. Import the source structure and adapt numbering to the relevant edition.
-7. Use `\newterm` once for each indexed concept.
-8. Keep long-proof and exercise-answer link pairs balanced.
-9. Put `\printterminology` last.
-10. Compile with XeLaTeX at least twice, run the template profile audit, and
+2. If no template is supplied, copy
+   `assets/MathTranslations-Template.tex` and `assets/logo.pdf` from this skill
+   into the translation project. Never edit the bundled masters in place.
+3. If a template is supplied, compare it with the bundled baseline and use the
+   supplied version when it is newer or project-specific.
+4. Compile the unchanged project copy to establish a baseline.
+5. Replace all cover metadata.
+6. Remove the sample body, not the required preamble, macros, or environments.
+7. Import the source structure and adapt numbering to the relevant edition.
+8. Use `\newterm` once for each indexed concept.
+9. Keep long-proof and exercise-answer link pairs balanced.
+10. Put `\printterminology` last.
+11. Compile with XeLaTeX at least twice, run the template profile audit, and
     compare the generated PDF with both the source PDF and the template sample.

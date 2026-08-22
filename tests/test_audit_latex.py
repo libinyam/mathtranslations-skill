@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import tempfile
 import unittest
@@ -14,6 +15,22 @@ SPEC.loader.exec_module(AUDIT)
 
 
 class AuditLatexTests(unittest.TestCase):
+    def test_bundled_assets_match_authorized_template(self) -> None:
+        assets = Path(__file__).parents[1] / "assets"
+        expected = {
+            "MathTranslations-Template.tex": (
+                "76f7b60a428192292779766e883376d0d4d15d50e3a3a24c367be8ae7f35a5fd"
+            ),
+            "logo.pdf": (
+                "8b3839adbf870a8c5e825c9f004125816835bbb321617e619e5f589b672fc8d5"
+            ),
+        }
+
+        for name, digest in expected.items():
+            with self.subTest(asset=name):
+                content = (assets / name).read_bytes()
+                self.assertEqual(digest, hashlib.sha256(content).hexdigest())
+
     def test_clean_project(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
