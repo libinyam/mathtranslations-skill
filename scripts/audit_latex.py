@@ -84,6 +84,7 @@ TEMPLATE_MARKERS = {
     "Kai terminology font": "FandolKai",
     "Fang theorem font": "FandolFang",
     "CMU Serif font": "cmunrm.otf",
+    "tikz-cd package": "tikz-cd",
     "internal-link color": "linkcolor=MidnightBlue",
     "citation color": "citecolor=BrickRed",
     "URL color": "urlcolor=MidnightBlue",

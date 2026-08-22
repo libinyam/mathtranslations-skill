@@ -17,6 +17,7 @@ MIT 许可的 LaTeX 模板与 logo。在线术语表仍保持外部引用，以�
 - 保留定理、证明、公式、标签、引用、脚注、图表和层级结构
 - 建立项目术语表，检查术语与符号一致性
 - 支持 MathTranslations 官方模板的 `\newterm`、术语索引、长证明及习题答案互跳
+- 交换图、态射图、范畴图及拉回/推出方块统一使用 `tikz-cd` 重绘
 - 新项目可以直接从 skill 的 `assets/` 复制模板与 logo，无需额外下载
 - 分离中文、数学、编译与版面三类校对
 - 用内置脚本检查重复标签、未定义引用、缺失资源、模板漂移和编译日志
@@ -52,6 +53,8 @@ git clone https://github.com/libinyam/mathtranslations-skill.git
 
 ```text
 使用 $mathtranslations 把这篇数学论文翻译成中文 LaTeX，并编译校对。
+所有交换图、态射图和适合节点箭头表达的数学图必须使用 tikzcd 重绘，
+不得使用截图代替。
 ```
 
 不支持 `$skill-name` 语法的 Agent 可以使用：
@@ -59,6 +62,7 @@ git clone https://github.com/libinyam/mathtranslations-skill.git
 ```text
 请先读取 mathtranslations/SKILL.md，并严格按照其中的工作流，
 把这篇数学论文翻译成中文 LaTeX，完成编译与校对。
+所有交换图、态射图和适合节点箭头表达的数学图必须使用 tikzcd 重绘。
 ```
 
 审校已有译本：

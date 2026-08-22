@@ -128,6 +128,15 @@ text without changing data. Preserve labels and references. If an asset is
 missing, use an explicit placeholder and report it rather than inventing a
 replacement.
 
+Rebuild commutative diagrams, morphism diagrams, category diagrams, exact
+diagrammatic sequences, and pullback or pushout squares with `tikz-cd`. Match
+the source's node arrangement, arrow direction, arrow style, labels, and
+commutativity. Do not embed a screenshot of a diagram.
+
+Use ordinary TikZ or preserve an original image only for content that
+`tikz-cd` cannot faithfully express, such as geometric figures, plots,
+photographs, or free-form illustrations. Document the exception.
+
 ### Bibliography
 
 Preserve citation keys and bibliographic facts. Translate a title only when the

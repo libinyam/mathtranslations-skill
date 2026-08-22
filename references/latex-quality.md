@@ -107,6 +107,31 @@ the user requests it or the source asset cannot legally or technically be used.
 When recreating a diagram, compare geometry, labels, orientation, and semantic
 relationships, not just visual style.
 
+For arrow-and-node mathematical diagrams, use:
+
+```tex
+\[
+\begin{tikzcd}
+A \arrow[r, "f"] \arrow[d, "g"'] & B \arrow[d, "h"] \\
+C \arrow[r, "k"']                & D
+\end{tikzcd}
+\]
+```
+
+This requirement covers commutative diagrams, category diagrams, morphism
+diagrams, pullback and pushout squares, and similar structures. Preserve:
+
+- node order and relative placement;
+- every arrow's source and target;
+- labels and their side of the arrow;
+- hooks, two-headed arrows, isomorphism marks, dashed arrows, bends, and
+  parallel arrows;
+- stated or visually implied commutativity.
+
+Do not substitute a screenshot, OCR image, Mermaid diagram, or generic table
+for a diagram that `tikz-cd` can express. Use ordinary TikZ or a source image
+only when `tikz-cd` would lose essential geometry or visual meaning.
+
 ## Compilation Discipline
 
 Use the project's build command. A successful single engine invocation may not

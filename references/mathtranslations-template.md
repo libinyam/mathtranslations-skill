@@ -52,6 +52,7 @@ The inspected template expects:
 
 - XeLaTeX, normally run at least twice;
 - `ctexart` with `UTF8`, `12pt`, and `fontset=none`;
+- `tikz-cd` for commutative and arrow-and-node mathematical diagrams;
 - A4 paper with 2.5 cm left/right and 2.8 cm top/bottom margins;
 - CMU Serif for English;
 - Fandol Song for Chinese prose and examples;
@@ -114,6 +115,18 @@ The template numbers these environments by subsection:
 Keep the source environment type. Use labels and real references such as
 `\autoref`, `\ref`, and `\eqref`. The template provides Chinese `\autoref`
 names.
+
+## Diagrams
+
+The bundled template already loads `tikz` and `tikz-cd`. Recreate every
+commutative diagram, morphism diagram, category diagram, pullback or pushout
+square, and similar arrow-and-node diagram in a `tikzcd` environment. Do not
+insert screenshots of those diagrams.
+
+Compare the compiled result with the source for node placement, labels, arrow
+directions, hooks, two-headed arrows, isomorphisms, dashed arrows, bends, and
+commutative relationships. Use ordinary TikZ or an original figure asset only
+when the source is not meaningfully representable as a `tikzcd` diagram.
 
 ## Long Proofs
 

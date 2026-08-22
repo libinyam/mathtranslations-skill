@@ -26,6 +26,8 @@ fluent Chinese while missing a mathematical or structural defect.
 - [ ] Theorem-like environment types and proof boundaries are preserved.
 - [ ] Section hierarchy, lists, examples, exercises, figures, and tables are
   complete and in the correct order.
+- [ ] Every arrow-and-node mathematical diagram is rebuilt with `tikzcd`;
+  nodes, labels, directions, arrow styles, and commutativity match the source.
 - [ ] Labels are unique and all references resolve to the intended objects.
 - [ ] Citation keys and locators match the source.
 - [ ] Suspected source errors are recorded instead of silently altered.
@@ -39,6 +41,8 @@ fluent Chinese while missing a mathematical or structural defect.
   section by section.
 - [ ] Display equations, tables, figures, captions, footnotes, and page breaks
   are readable and not clipped.
+- [ ] Every `tikzcd` diagram compiles without overlap, clipping, missing labels,
+  or arrows pointing to the wrong node.
 - [ ] Fonts contain all required Chinese and mathematical glyphs.
 - [ ] Overfull boxes, bad breaks, widows, and orphans have been reviewed where
   they materially affect reading.

@@ -110,6 +110,7 @@ class AuditLatexTests(unittest.TestCase):
                 "\\newenvironment{longproof}[2]{}{}\n"
                 "\\newenvironment{exercises}{}{}\n"
                 "\\newenvironment{answers}[1]{}{}\n"
+                "\\usepackage{tikz-cd}\n"
                 "\\def\\fonts{FandolSong FandolKai FandolFang cmunrm.otf}\n"
                 "\\def\\links{linkcolor=MidnightBlue,citecolor=BrickRed,"
                 "urlcolor=MidnightBlue,linktoc=all}\n"

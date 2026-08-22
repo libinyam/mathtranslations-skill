@@ -58,6 +58,14 @@ the source, and maintained as a real LaTeX project.
   sound. Do not convert formulas into prose, screenshots, or Unicode lookalikes.
 - Preserve theorem-like environments, equation structure, bibliography links,
   footnotes, figures, tables, and section hierarchy.
+- Recreate commutative diagrams, morphism diagrams, category diagrams,
+  pullback or pushout squares, and other arrow-and-node mathematical diagrams
+  with the `tikz-cd` package and `tikzcd` environment. Do not replace them with
+  screenshots or raster images. Preserve every node, label, arrow direction,
+  arrow style, and commutative relationship from the source.
+- Use ordinary TikZ or a source image only when a figure cannot be represented
+  faithfully as a `tikzcd` diagram, such as a geometric illustration, plot,
+  photograph, or highly free-form drawing. Record that exception.
 - With the MathTranslations template, introduce a concept once with
   `\newterm{stable-key}{中文术语}{English term}`, write the Chinese term normally
   afterward, and keep `\printterminology` as the final document content.
