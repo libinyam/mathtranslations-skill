@@ -1,0 +1,4 @@
+interface:
+  display_name: "MathTranslations"
+  short_description: "Translate mathematical texts into rigorous Chinese LaTeX"
+  default_prompt: "Use $mathtranslations to translate this mathematical source into publication-ready Chinese LaTeX."
