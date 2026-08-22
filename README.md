@@ -1,8 +1,11 @@
-# MathTranslations Skill
+# MathTranslations Agent Skill
 
-一个用于严谨数学翻译的 Codex skill。它把数学书籍、论文、讲义或已有
+一个平台无关的严谨数学翻译 Agent Skill。它把数学书籍、论文、讲义或已有
 LaTeX 项目翻译成可编译、可校对、可维护的中文 LaTeX，并支持复核与修复
 现有译稿。
+
+本 Skill 不绑定 Codex 或任何特定模型、厂商和 Agent 框架。任何能够读取
+Markdown 指令、访问项目文件并调用必要工具的 Agent 都可以使用。
 
 本项目根据 [MathTranslations 数学翻译指南](https://mathtranslations.org/guide/)
 整理为可执行工作流，并经 MathTranslations 创始人和版权所有者授权，内置
@@ -18,21 +21,47 @@ MIT 许可的 LaTeX 模板与 logo。在线术语表仍保持外部引用，以�
 - 分离中文、数学、编译与版面三类校对
 - 用内置脚本检查重复标签、未定义引用、缺失资源、模板漂移和编译日志
 
-## 安装
+## Agent 兼容性
 
-将本仓库克隆或复制到 Codex skills 目录：
+Agent 最好具备以下能力：
 
-```text
-~/.codex/skills/mathtranslations
+- 读取 `SKILL.md` 和按需读取 `references/`
+- 读取原始 PDF、MinerU Markdown、图片和 LaTeX 文件
+- 在工作目录中创建和修改文件
+- 执行 Python、XeLaTeX 或项目已有的构建命令
+- 检查编译日志和生成的 PDF
+
+`agents/openai.yaml` 只是 OpenAI/Codex 客户端可选的界面元数据。其他 Agent
+可以忽略它，直接使用 `SKILL.md`。
+
+## 安装与调用
+
+将本仓库克隆到本地：
+
+```bash
+git clone https://github.com/libinyam/mathtranslations-skill.git
 ```
 
-重新启动 Codex 后，可以显式调用：
+然后选择适合当前 Agent 的方式：
+
+1. 将仓库复制到该 Agent 的 skills、rules 或 instructions 目录。
+2. 在 Agent 配置中将本仓库或 `SKILL.md` 注册为一个 skill。
+3. 在任务中直接要求 Agent 先读取本仓库的 `SKILL.md`。
+
+支持 skill 调用语法的 Agent 可以使用：
 
 ```text
 使用 $mathtranslations 把这篇数学论文翻译成中文 LaTeX，并编译校对。
 ```
 
-也可以用于审校：
+不支持 `$skill-name` 语法的 Agent 可以使用：
+
+```text
+请先读取 mathtranslations/SKILL.md，并严格按照其中的工作流，
+把这篇数学论文翻译成中文 LaTeX，完成编译与校对。
+```
+
+审校已有译本：
 
 ```text
 使用 $mathtranslations 对照原始 PDF 复核这个中文 LaTeX 项目，修复引用和排版问题。
