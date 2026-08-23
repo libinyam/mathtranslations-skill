@@ -23,7 +23,8 @@ the source, and maintained as a real LaTeX project.
    requests it or reliable evidence resolves it.
 5. Separate content authority from presentation authority. The source PDF
    governs mathematical content; when the user chooses the MathTranslations
-   template, `MathTranslations-Template.tex` governs typesetting conventions.
+   template, `mathtranslations-translation-template.tex` governs typesetting
+   conventions.
 
 ## Prepare The Project
 
@@ -33,13 +34,16 @@ the source, and maintained as a real LaTeX project.
 - For a new project, consult the current MathTranslations guide before choosing
   a template or terminology source. Prefer the latest stable resources linked
   from <https://mathtranslations.org/guide/> over bundled stale copies.
-- When a `MathTranslations-Template.zip` or `MathTranslations-Template.tex` is
-  supplied, inspect that exact version instead of relying on memory. Read
-  [references/mathtranslations-template.md](references/mathtranslations-template.md)
+- When a `mathtranslations-translation-template.zip` or
+  `mathtranslations-translation-template.tex` is supplied, inspect that exact
+  version instead of relying on memory. Archives under the older name
+  `MathTranslations-Template.zip` are earlier releases of the same template.
+  Read [references/mathtranslations-template.md](references/mathtranslations-template.md)
   before adapting it.
 - If the user selects the MathTranslations template but supplies no template
-  files, copy `assets/MathTranslations-Template.tex` and `assets/logo.pdf` into
-  the project. Keep the bundled masters unchanged; edit the project copies.
+  files, copy `assets/mathtranslations-translation-template.tex` and
+  `assets/logo.pdf` into the project. Keep the bundled masters unchanged; edit
+  the project copies.
 - If the user supplies a newer template, prefer that version after comparing
   its contract with the bundled baseline and recording any meaningful changes.
 - Build a small project glossary before translating substantial text. Reuse
@@ -63,9 +67,22 @@ the source, and maintained as a real LaTeX project.
   with the `tikz-cd` package and `tikzcd` environment. Do not replace them with
   screenshots or raster images. Preserve every node, label, arrow direction,
   arrow style, and commutative relationship from the source.
-- Use ordinary TikZ or a source image only when a figure cannot be represented
-  faithfully as a `tikzcd` diagram, such as a geometric illustration, plot,
-  photograph, or highly free-form drawing. Record that exception.
+- Handle ordinary figures by priority: when the source PDF has good quality
+  and the figure is clear, crop a faithful screenshot as the preferred asset;
+  redraw simple figures with ordinary TikZ; keep `tikzcd` for arrow-and-node
+  diagrams. Record any exception.
+- Typeset display formulas uniformly in `align`, `aligned`, or `align*`
+  environments. Never place multiple `\[ \]` blocks side by side; merge them
+  into a single environment.
+- Use the `enumerate` environment for every ordered list; never type the
+  numbering manually.
+- Write Chinese double quotes with TeX ligatures: two grave accents for the
+  opening quote and two straight apostrophes for the closing quote. The
+  apostrophe pair alone renders a closing quote, and Unicode curly quotes
+  are not used in this template.
+- On the MathTranslations cover, keep the publisher line and the
+  `\Translator 翻译及重排` credit line directly below it, set slightly larger
+  than the publisher line, as the template sample shows.
 - With the MathTranslations template, introduce a concept once with
   `\newterm{stable-key}{中文术语}{English term}`, write the Chinese term normally
   afterward, and keep `\printterminology` as the final document content.

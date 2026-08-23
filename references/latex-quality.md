@@ -14,6 +14,7 @@ notation, or repairing a translated project.
 - Keep equation grouping and alignment when it communicates derivation or
   equivalence.
 - Do not normalize notation merely because another notation is more familiar.
+- Use `enumerate` for ordered lists; never type the numbering manually.
 
 When the source seems mathematically wrong, record the exact location and the
 evidence. Preservation and correction are separate editorial choices.
@@ -77,7 +78,11 @@ across included files.
 The inspected MathTranslations profile has an unusual but explicit rule:
 Chinese punctuation is used inside prose, while sentence-final punctuation is
 an ASCII period `.` rather than `。`. Apply this only when that template is the
-selected presentation authority.
+selected presentation authority. The same profile requires display formulas in
+`align`, `aligned`, or `align*` environments (never multiple `\[ \]` blocks in
+a row), ordered lists in `enumerate`, and Chinese double quotes written with
+the TeX ligatures — two grave accents opening, two straight apostrophes
+closing — rather than Unicode curly quotes.
 
 The same profile uses Song for prose and examples, Kai for first-introduction
 terms, Fang for most theorem-like bodies, and CMU Serif for English. Preserve
@@ -104,8 +109,11 @@ with the source before accepting it.
 Check that every `\includegraphics` target resolves with the project's extension
 and search-path rules. Do not redraw or replace mathematical diagrams unless
 the user requests it or the source asset cannot legally or technically be used.
-When recreating a diagram, compare geometry, labels, orientation, and semantic
-relationships, not just visual style.
+When the MathTranslations template is selected, follow its figure priority:
+crop a faithful screenshot from a good-quality source PDF for clear figures,
+redraw simple figures with TikZ, and rebuild arrow-and-node diagrams with
+`tikz-cd`. When recreating a diagram, compare geometry, labels, orientation,
+and semantic relationships, not just visual style.
 
 For arrow-and-node mathematical diagrams, use:
 

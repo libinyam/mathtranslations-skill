@@ -62,6 +62,9 @@ LONGPROOF_ENV_RE = re.compile(r"\\begin\s*\{longproof\}\s*\{([^{}]+)\}\s*\{")
 COMMAND_DEFINITION_RE = re.compile(
     r"\\(?:newcommand|renewcommand|providecommand)\s*\{\\([A-Za-z@]+)\}"
 )
+CURLY_QUOTE_RE = re.compile("[“”]")
+CONSECUTIVE_DISPLAY_MATH_RE = re.compile(r"\\\]\s*\\\[")
+MANUAL_NUMBERING_LINE_RE = re.compile(r"^\s*\d+[.、)]\s+\S")
 METADATA_DEFAULTS = {
     "BookTitleCN": "代数学",
     "BookTitleEN": "Algebra",
@@ -89,6 +92,7 @@ TEMPLATE_MARKERS = {
     "citation color": "citecolor=BrickRed",
     "URL color": "urlcolor=MidnightBlue",
     "clickable TOC entries": "linktoc=all",
+    "cover translator credit": r"\Translator\ 翻译及重排",
 }
 
 
@@ -195,12 +199,35 @@ def audit_mathtranslations_profile(
         active = strip_comments(text)
         active_parts.append(active)
         display = source_file.relative_to(project_root)
+        manual_numbering_run = 0
         for number, line in enumerate(active.splitlines(), start=1):
             if "。" in line:
                 warnings.append(
                     f"{display}:{number}: MathTranslations prose uses ASCII '.' "
                     "for sentence endings; found '。'"
                 )
+            for quote_match in CURLY_QUOTE_RE.finditer(line):
+                warnings.append(
+                    f"{display}:{number}: MathTranslations quotes use TeX "
+                    f"`` and '' markers; found {quote_match.group(0)!r}"
+                )
+                break
+            if MANUAL_NUMBERING_LINE_RE.match(line):
+                manual_numbering_run += 1
+                if manual_numbering_run == 2:
+                    warnings.append(
+                        f"{display}:{number}: manually numbered list found; "
+                        "use the enumerate environment instead"
+                    )
+            else:
+                manual_numbering_run = 0
+
+        for match in CONSECUTIVE_DISPLAY_MATH_RE.finditer(active):
+            warnings.append(
+                f"{display}:{line_number(active, match.start())}: consecutive "
+                "display-math blocks; use a single align/aligned/align* "
+                "environment instead"
+            )
 
     raw_text = "\n".join(raw_parts)
     active_text = "\n".join(active_parts)

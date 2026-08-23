@@ -49,7 +49,8 @@ For a new project:
   [mathtranslations-template.md](mathtranslations-template.md), preserve an
   untouched copy, and compile the unchanged template as a baseline;
 - if the user did not supply template files, copy the skill's bundled
-  `assets/MathTranslations-Template.tex` and `assets/logo.pdf` into the project;
+  `assets/mathtranslations-translation-template.tex` and `assets/logo.pdf`
+  into the project;
 - otherwise choose a Unicode-capable Chinese TeX setup appropriate to the
   environment;
 - keep source assets and generated build artifacts separate;
@@ -119,23 +120,26 @@ omitted argument.
 
 Retain displayed versus inline status when it carries meaning. Preserve
 alignment, tags, cases, punctuation, and surrounding grammatical connections.
-Compare every symbol, subscript, superscript, delimiter, and quantifier.
+Compare every symbol, subscript, superscript, delimiter, and quantifier. With
+the MathTranslations template, typeset display formulas in `align`, `aligned`,
+or `align*` environments and never place multiple `\[ \]` blocks side by side.
 
 ### Figures And Tables
 
-Reuse source assets when permitted and available. Translate captions and table
-text without changing data. Preserve labels and references. If an asset is
-missing, use an explicit placeholder and report it rather than inventing a
-replacement.
+Follow the template's figure priority: when the source PDF has good quality
+and a figure is clear, crop a faithful screenshot as the preferred asset;
+redraw simple figures with ordinary TikZ; rebuild arrow-and-node diagrams with
+`tikz-cd` (never screenshots of them). Translate captions and table text
+without changing data. Preserve labels and references. If an asset is missing,
+use an explicit placeholder and report it rather than inventing a replacement.
 
 Rebuild commutative diagrams, morphism diagrams, category diagrams, exact
 diagrammatic sequences, and pullback or pushout squares with `tikz-cd`. Match
 the source's node arrangement, arrow direction, arrow style, labels, and
-commutativity. Do not embed a screenshot of a diagram.
+commutativity.
 
-Use ordinary TikZ or preserve an original image only for content that
-`tikz-cd` cannot faithfully express, such as geometric figures, plots,
-photographs, or free-form illustrations. Document the exception.
+Record every figure that cannot follow this priority, such as photographs or
+free-form illustrations that TikZ cannot faithfully express.
 
 ### Bibliography
 
@@ -151,7 +155,9 @@ faithful.
 
 For the MathTranslations cover, replace all sample metadata: Chinese and
 English titles, author, edition, publisher, year, translator, model, and update
-date. Keep the terminology index after the bibliography and all other content.
+date. Keep the `\Translator 翻译及重排` credit line directly below the
+publisher line. Keep the terminology index after the bibliography and all
+other content.
 
 ## 7. Track Uncertainty
 

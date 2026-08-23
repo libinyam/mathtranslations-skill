@@ -22,5 +22,13 @@ The MathTranslations founder and copyright holder authorized
 in this repository under the MIT License. The compiled example PDF is not
 included because it is not required by the skill.
 
+The official archive was renamed to `mathtranslations-translation-template.zip`
+and re-inspected on 2026-08-23 (SHA-256
+`4C2E5AD1C81646B4E8AD53F4B5FD5BAA7D477C749915E32CF52B5EE71F85F12E`). The
+updated `assets/mathtranslations-translation-template.tex` derives from that
+authorized archive under the same MIT-License authorization, and the earlier
+`MathTranslations-Template.*` name refers to previous releases of the same
+template.
+
 MathTranslations and its website are not affiliated with or responsible for
 this repository.

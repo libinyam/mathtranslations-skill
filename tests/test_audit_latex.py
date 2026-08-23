@@ -18,8 +18,8 @@ class AuditLatexTests(unittest.TestCase):
     def test_bundled_assets_match_authorized_template(self) -> None:
         assets = Path(__file__).parents[1] / "assets"
         expected = {
-            "MathTranslations-Template.tex": (
-                "76f7b60a428192292779766e883376d0d4d15d50e3a3a24c367be8ae7f35a5fd"
+            "mathtranslations-translation-template.tex": (
+                "b2cc106209969e77878f3ba6dfe0bf050d4d38da0c68e558a96241350827531e"
             ),
             "logo.pdf": (
                 "8b3839adbf870a8c5e825c9f004125816835bbb321617e619e5f589b672fc8d5"
@@ -117,6 +117,7 @@ class AuditLatexTests(unittest.TestCase):
                 f"{metadata_tex}\n"
                 "\\begin{document}\n"
                 "\\newterm{topology}{拓扑}{topology}.\n"
+                "封面：\\Translator\\ 翻译及重排.\n"
                 "\\longprooflink{main-proof}{查看证明}\n"
                 "\\begin{longproof}{main-proof}{主定理}证明.\\end{longproof}\n"
                 "\\printterminology\n"
@@ -128,6 +129,30 @@ class AuditLatexTests(unittest.TestCase):
 
             self.assertEqual([], errors)
             self.assertEqual([], warnings)
+
+    def test_mathtranslations_profile_flags_typesetting_rules(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "main.tex").write_text(
+                "% !TeX program = xelatex\n"
+                "\\documentclass[UTF8,12pt,fontset=none]{ctexart}\n"
+                "\\begin{document}\n"
+                "\\[ a+b \\]\n"
+                "\\[ c+d \\]\n"
+                "中文“引号”示例.\n"
+                "1. 手动编号第一条\n"
+                "2. 手动编号第二条\n"
+                "\\end{document}\n",
+                encoding="utf-8",
+            )
+
+            _, warnings = AUDIT.audit(root, profile="mathtranslations")
+
+            self.assertTrue(
+                any("consecutive display-math" in item for item in warnings)
+            )
+            self.assertTrue(any("TeX `` and ''" in item for item in warnings))
+            self.assertTrue(any("enumerate" in item for item in warnings))
 
     def test_mathtranslations_profile_reports_drift(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

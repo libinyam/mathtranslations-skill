@@ -2,8 +2,7 @@
 % 数译（mathtranslations.org）数学中文译本排版模板
 % 建议使用 XeLaTeX 连续编译两次，以生成目录、交叉引用、双向链接与术语索引页码.
 %
-% 文件依赖：logo.pdf、logo-mark.pdf
-% 同时保留原始 SVG：logo.svg、logo-mark.svg
+% 文件依赖：logo.pdf
 %
 % 模板约定：
 % 1. 正文中文使用宋体，专用术语首次定义时使用楷体，定理、定义、命题、推论、引理、注使用仿宋.
@@ -14,6 +13,9 @@
 % 6. 只有“注”和“例”环境以 \diamond 标志结束；proof 仍以 \square 结束.
 % 7. 排版文字除句末使用英文句点“.”外，其余标点统一使用中文标点.
 % 8. 过长证明建议移至所在小节末、习题之前的 longproof 环境，并用 \longprooflink 建立双向链接.
+% 9. 行间公式统一使用 align、aligned 或 align* 环境，不要出现多个 \[ \] 并列的情形.
+% 10. 有序列表一律使用 enumerate 环境，不要手动编号.
+% 11. 中文引号统一写作 TeX 引号：前引号 ``、后引号 ''，例如 ``正规子群''；不要使用中文全角引号.
 
 \documentclass[UTF8,12pt,fontset=none]{ctexart}
 
@@ -58,7 +60,7 @@
 
 % ---------- 译本元信息：实际使用时只需修改这里 ----------
 % 封面标题：中文译名 + 原书名
-% 右下角只显示：版次 · 出版社 · 年份 / 译者 / 使用模型 / 更新时间
+% 右下角只显示：版次 · 出版社 · 年份 / 译者 翻译及重排 / 使用模型 / 更新时间
 \newcommand{\BookTitleCN}{代数学}
 \newcommand{\BookTitleEN}{Algebra}
 \newcommand{\OriginalAuthor}{Serge Lang}
@@ -443,8 +445,8 @@
     \hfill
     \begin{minipage}[b]{0.50\textwidth}
         \raggedleft
-        {\small \OriginalEdition · \OriginalPublisher · \OriginalYear} \\
-        {\small Translated by \Translator} \\
+        {\small \OriginalEdition · \OriginalPublisher · \OriginalYear} \\[0.25cm]
+        {\normalsize \Translator\ 翻译及重排} \\[0.25cm]
         {\small Model: \ModelUsed} \\
         {\small Updated: \TranslationDate}
     \end{minipage}
@@ -462,8 +464,17 @@
 \section*{译者说明}
 \addcontentsline{toc}{section}{译者说明}
 
-本文件是一份排版示例，正文选取群论中最基本的一段内容，用来展示术语、定理环境、交叉引用、长证明、习题与术语索引等功能.
+本文件是一份排版示例，正文选取群论中最基本的一段内容，用来展示术语、定理环境、交叉引用、行间公式、有序列表、长证明、习题与术语索引等功能.
 正式翻译时，可以在这里说明所依据的原书版次、翻译与重排原则、模型的使用方式，以及与原书章节、公式或页码之间需要保留的对应关系.
+
+排版基本流程如下：
+\begin{enumerate}
+    \item 以原书为最高依据完成翻译；
+    \item 按本模板完成 LaTeX 排版与交叉引用；
+    \item 编译通过后进行数学、术语与排版三轮检查.
+\end{enumerate}
+
+排版细则：行间公式统一使用 align、aligned 或 align* 环境，不要出现多个 \[ \] 并列的情形；有序列表一律使用 enumerate；中文双引号的前引号写作 ``，后引号写作 ''，例如 ``正规子群''.
 
 \vspace{0.5cm}
 \hfill \Translator
@@ -544,9 +555,9 @@
 
 \begin{definition}\label{def:quotient-group}
 若 \(N\trianglelefteq G\)，则所有陪集
-\[
+\begin{align*}
     G/N=\{gN\mid g\in G\}
-\]
+\end{align*}
 在乘法 \((gN)(hN)=ghN\) 下构成的群称为 \newterm{quotient-group}{商群}{quotient group}.
 \end{definition}
 
@@ -555,9 +566,9 @@
 \begin{definition}\label{def:homomorphism}
 设 \(G\) 与 \(H\) 是群.
 若映射 \(\varphi:G\to H\) 满足
-\[
+\begin{align*}
     \varphi(xy)=\varphi(x)\varphi(y)
-\]
+\end{align*}
 对所有 \(x,y\in G\) 都成立，则称 \(\varphi\) 为 \newterm{homomorphism}{群同态}{group homomorphism}.
 \end{definition}
 
@@ -565,12 +576,15 @@
 
 \begin{definition}\label{def:kernel-image}
 群同态 \(\varphi:G\to H\) 的 \newterm{kernel}{核}{kernel} 与 \newterm{image}{像}{image} 分别定义为
-\[
-    \ker\varphi=\{g\in G\mid \varphi(g)=e_H\},
-    \qquad
-    \operatorname{im}\varphi=\{\varphi(g)\mid g\in G\}.
-\]
+\begin{align}
+    \ker\varphi&=\{g\in G\mid \varphi(g)=e_H\},
+    &
+    \operatorname{im}\varphi&=\{\varphi(g)\mid g\in G\}.
+    \label{eq:kernel-image}
+\end{align}
 \end{definition}
+
+核不仅记录同态把哪些元素压成了单位元（见式~\eqref{eq:kernel-image}），它还精确描述了同态在定义域中丢失的信息.
 
 \begin{proposition}\label{prop:kernel-normal}
 对任意群同态 \(\varphi:G\to H\)，都有 \(\ker\varphi\trianglelefteq G\).
@@ -579,22 +593,20 @@
 \begin{proof}
 取 \(x\in\ker\varphi\) 与 \(g\in G\).
 则
-\[
+\begin{align*}
     \varphi(gxg^{-1})
     =\varphi(g)\varphi(x)\varphi(g)^{-1}
     =e_H.
-\]
+\end{align*}
 因此 \(gxg^{-1}\in\ker\varphi\)，所以 \(\ker\varphi\) 是正规子群.
 \end{proof}
-
-核不仅记录同态把哪些元素压成了单位元，它还精确描述了同态在定义域中丢失的信息.
 
 \begin{theorem}\label{thm:first-iso}
 设 \(\varphi:G\to H\) 是群同态.
 则存在自然同构
-\[
+\begin{align*}
     G/\ker\varphi\cong\operatorname{im}\varphi.
-\]
+\end{align*}
 \end{theorem}
 
 这个结论通常称为群的第一同构定理，关于这一基本结果也可参见 \cite{lang}.
@@ -630,23 +642,22 @@ G/\ker\varphi \arrow[ur,"\overline{\varphi}"',"\sim"]
 % ================================================================
 \begin{example}\label{ex:modn}
 考虑群同态
-\[
-    \varphi:\mathbb Z\longrightarrow\mathbb Z/n\mathbb Z,
-    \qquad
-    m\longmapsto \overline m.
-\]
+\begin{align*}
+    \varphi:\mathbb Z&\longrightarrow\mathbb Z/n\mathbb Z,\\
+    m&\longmapsto\overline m.
+\end{align*}
 它的核是 \(n\mathbb Z\)，像是整个 \(\mathbb Z/n\mathbb Z\).
 因此 \autoref{thm:first-iso} 给出
-\[
+\begin{align*}
     \mathbb Z/n\mathbb Z\cong \operatorname{im}\varphi.
-\]
+\end{align*}
 \end{example}
 
 \begin{problem}\label{prob:sign}
 设
-\[
+\begin{align*}
     \operatorname{sgn}:S_n\longrightarrow\{\pm1\}
-\]
+\end{align*}
 为符号同态.
 求它的核，并利用 \autoref{thm:first-iso} 描述对应的商群.
 \end{problem}
@@ -656,46 +667,45 @@ G/\ker\varphi \arrow[ur,"\overline{\varphi}"',"\sim"]
 \begin{longproof}{first-iso-proof}{\autoref{thm:first-iso}}
 由 \autoref{prop:kernel-normal}，\(\ker\varphi\trianglelefteq G\)，所以商群 \(G/\ker\varphi\) 有定义.
 定义
-\[
-    \overline{\varphi}:G/\ker\varphi\longrightarrow\operatorname{im}\varphi,
-    \qquad
-    g\ker\varphi\longmapsto\varphi(g).
-\]
+\begin{align*}
+    \overline{\varphi}:G/\ker\varphi&\longrightarrow\operatorname{im}\varphi,\\
+    g\ker\varphi&\longmapsto\varphi(g).
+\end{align*}
 
 首先验证这个映射定义良好.
 若
-\[
+\begin{align*}
     g\ker\varphi=h\ker\varphi,
-\]
+\end{align*}
 则 \(h^{-1}g\in\ker\varphi\)，从而
-\[
+\begin{align*}
     \varphi(h)^{-1}\varphi(g)
     =\varphi(h^{-1}g)
     =e_H.
-\]
+\end{align*}
 因此 \(\varphi(g)=\varphi(h)\)，所以 \(\overline{\varphi}\) 与陪集代表元的选择无关.
 
 其次，\(\overline{\varphi}\) 是群同态，因为
-\[
+\begin{align*}
     \overline{\varphi}\bigl((g\ker\varphi)(h\ker\varphi)\bigr)
     =\varphi(gh)
     =\varphi(g)\varphi(h).
-\]
+\end{align*}
 
 它显然是满射，因为 \(\operatorname{im}\varphi\) 中的每个元素都具有形式 \(\varphi(g)\).
 
 最后验证单射.
 若
-\[
+\begin{align*}
     \overline{\varphi}(g\ker\varphi)=e_H,
-\]
+\end{align*}
 则 \(\varphi(g)=e_H\)，故 \(g\in\ker\varphi\).
 于是 \(g\ker\varphi=\ker\varphi\)，所以 \(\overline{\varphi}\) 的核只有单位陪集.
 
 因此 \(\overline{\varphi}\) 是同构，从而
-\[
+\begin{align*}
     G/\ker\varphi\cong\operatorname{im}\varphi.
-\]
+\end{align*}
 \end{longproof}
 
 % 本小节的习题紧接在正文与长证明之后.
@@ -732,9 +742,9 @@ G/\ker\varphi \arrow[ur,"\overline{\varphi}"',"\sim"]
     \item
     单位元属于像.
     若 \(a=\varphi(x)\) 与 \(b=\varphi(y)\) 属于像，则
-    \[
+    \begin{align*}
         ab^{-1}=\varphi(xy^{-1})
-    \]
+    \end{align*}
     仍属于像.
     由 \autoref{lem:subgroup-test}，\(\operatorname{im}\varphi\leq H\).
 

@@ -17,10 +17,12 @@ MIT 许可的 LaTeX 模板与 logo。在线术语表仍保持外部引用，以�
 - 保留定理、证明、公式、标签、引用、脚注、图表和层级结构
 - 建立项目术语表，检查术语与符号一致性
 - 支持 MathTranslations 官方模板的 `\newterm`、术语索引、长证明及习题答案互跳
-- 交换图、态射图、范畴图及拉回/推出方块统一使用 `tikz-cd` 重绘
+- 插图按优先级处理：清晰原图优先截图、简单插图用 TikZ、交换图统一用 `tikz-cd` 重绘
+- 行间公式统一 `align` 类环境、有序列表用 `enumerate`、中文引号用 TeX 引号写法
 - 新项目可以直接从 skill 的 `assets/` 复制模板与 logo，无需额外下载
 - 分离中文、数学、编译与版面三类校对
-- 用内置脚本检查重复标签、未定义引用、缺失资源、模板漂移和编译日志
+- 用内置脚本检查重复标签、未定义引用、缺失资源、模板漂移、连续展示公式、
+  全角弯引号、手动编号列表和编译日志
 
 ## Agent 兼容性
 
@@ -84,7 +86,8 @@ python scripts/audit_latex.py path/to/project --profile mathtranslations --stric
 
 默认情况下，确定性错误返回非零状态；`--strict` 也会让警告返回非零状态，
 适合 CI。`--profile mathtranslations` 还会检查 XeLaTeX、模板元信息、字体与
-链接配置、术语键、长证明配对、句末标点和最终术语索引。
+链接配置、术语键、长证明配对、句末标点、行间公式环境、引号写法、列表
+环境和最终术语索引。
 
 ## 目录
 
@@ -93,7 +96,7 @@ mathtranslations/
 ├── SKILL.md
 ├── agents/openai.yaml
 ├── assets/
-│   ├── MathTranslations-Template.tex
+│   ├── mathtranslations-translation-template.tex
 │   └── logo.pdf
 ├── references/
 │   ├── latex-quality.md
@@ -110,16 +113,17 @@ mathtranslations/
 在线指南、术语资源与模板可能更新，实际项目应以
 [指南页面](https://mathtranslations.org/guide/) 当前版本为准。
 
-模板配置参考核对了
-`MathTranslations-Template.c9598d4a8d56.zip` 的实际 TeX 与示例 PDF。
-模板 TeX 与 logo 经版权所有者授权，作为本仓库 MIT 许可内容公开；编译示例
-PDF 未打包，因为运行 skill 不需要它。
+模板配置参考核对了官方
+`mathtranslations-translation-template.zip`（2026-08-23 版；旧名
+`MathTranslations-Template.c9598d4a8d56.zip` 为同一模板的早期发布）的
+实际 TeX 与示例 PDF。模板 TeX 与 logo 经版权所有者授权，作为本仓库 MIT
+许可内容公开；编译示例 PDF 未打包，因为运行 skill 不需要它。
 
 数学翻译仍需要领域知识和人工判断。编译成功或脚本检查通过，不代表数学内容
 已经正确。
 
 ## License
 
-本仓库内容（包括 `assets/MathTranslations-Template.tex` 与
+本仓库内容（包括 `assets/mathtranslations-translation-template.tex` 与
 `assets/logo.pdf`）采用 MIT License。在线术语数据与原始数学作品仍受其
 各自许可和版权约束。

@@ -12,8 +12,10 @@ fluent Chinese while missing a mathematical or structural defect.
 - [ ] Logical connectors retain their force.
 - [ ] Proper names, transliterations, acronyms, and capitalization are stable.
 - [ ] Punctuation and spacing are consistent.
+- [ ] Chinese double quotes use the TeX ligatures (two grave accents opening,
+      two straight apostrophes closing), not Unicode curly quotes.
 - [ ] If the MathTranslations template is selected, Chinese prose sentences
-  end in ASCII `.` and first-introduction terms use unique `\newterm` keys.
+      end in ASCII `.` and first-introduction terms use unique `\newterm` keys.
 - [ ] Translator additions are visibly distinguished from source content.
 
 ## Pass 2: Mathematics And Structure
@@ -28,6 +30,10 @@ fluent Chinese while missing a mathematical or structural defect.
   complete and in the correct order.
 - [ ] Every arrow-and-node mathematical diagram is rebuilt with `tikzcd`;
   nodes, labels, directions, arrow styles, and commutativity match the source.
+- [ ] Other figures follow the template priority: faithful screenshots from a
+  good-quality source PDF, ordinary TikZ for simple figures.
+- [ ] Display formulas use `align`-family environments with no juxtaposed
+  `\[ \]` blocks; ordered lists use `enumerate`, never manual numbering.
 - [ ] Labels are unique and all references resolve to the intended objects.
 - [ ] Citation keys and locators match the source.
 - [ ] Suspected source errors are recorded instead of silently altered.
@@ -51,7 +57,8 @@ fluent Chinese while missing a mathematical or structural defect.
 - [ ] MathTranslations exercises and answer prefixes preserve source order and
   navigate to the intended counterparts.
 - [ ] Cover metadata no longer contains sample title, author, translator,
-  model, edition, or date values.
+      model, edition, or date values, and the `\Translator 翻译及重排` credit
+      line sits directly below the publisher line.
 - [ ] `\printterminology` appears exactly once as the final document content.
 
 ## Completion Note
